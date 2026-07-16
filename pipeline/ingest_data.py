@@ -29,48 +29,72 @@ parse_dates = [
     "tpep_dropoff_datetime"
 ]
 
-df = pd.read_csv(
+def ingest_data(url:str,engine,target_table:str,chunksize:int=100000)-> pd.DataFrame:
+    df = pd.read_csv(
     url,
     dtype=dtype,
     parse_dates=parse_dates
-)
-
-
-engine = create_engine('postgresql://root:root@localhost:5432/ny_taxi')
-
-# print(pd.io.sql.get_schema(df, name='yellow_taxi_data', con=engine))
-
-df.head(0).to_sql(name='yellow_taxi_data', con=engine,if_exists='replace')
-
-df = pd.read_csv(
-    url,
-    dtype=dtype,
-    parse_dates=parse_dates,
-    iterator=True,
-    chunksize=100000
-)
-
-
-first = True
-for df_chunk in tqdm(df):
-    len(df_chunk)
-    if first:
-        # Create table schema (no data)
-        df_chunk.head(0).to_sql(
-            name="yellow_taxi_data",
-            con=engine,
-            if_exists="replace"
-        )
-        first = False
-        print("Table created")
-
-    # Insert chunk
-    df_chunk.to_sql(
-        name="yellow_taxi_data",
-        con=engine,
-        if_exists="append"
     )
-    print(len(df_chunk))
+
+    df.head(0).to_sql(name=target_table, con=engine,if_exists='replace')
+
+    df = pd.read_csv(
+        url,
+        dtype=dtype,
+        parse_dates=parse_dates,
+        iterator=True,
+        chunksize=100000
+    )
+
+    first = True
+    for df_chunk in tqdm(df):
+        len(df_chunk)
+        if first:
+            # Create table schema (no data)
+            df_chunk.head(0).to_sql(
+                name=target_table,
+                con=engine,
+                if_exists="replace"
+            )
+            first = False
+            print("Table created")
+
+        # Insert chunk
+        df_chunk.to_sql(
+            name=target_table,
+            con=engine,
+            if_exists="append"
+        )
+        print(len(df_chunk))
+
+
+
+def main():
+    pg_user = 'root'
+    pg_pass = 'root'
+    pg_host = 'localhost'
+    pg_port = '5432'
+    pg_db = 'ny_taxi'
+    year = 2021
+    month = 1
+    chunksize = 100000
+    target_table = 'yellow_taxi_data'
+
+    engine = create_engine(f'postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}')
+    url_prefix = 'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow'
+
+    url = f'{url_prefix}/yellow_tripdata_{year:04d}-{month:02d}.csv.gz'
+
+    ingest_data(
+        url=url,engine=engine,target_table=target_table,chunksize=chunksize
+    )
+
+
+if __name__ == '__main__':
+    main()
+
+
+
 
 
 
