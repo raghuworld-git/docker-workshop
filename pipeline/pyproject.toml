@@ -1,35 +1,23 @@
+[project]
+name = "pipeline"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "click>=8.3.1",
+    "pandas>=2.3.3",
+    "psycopg2-binary>=2.9.11",
+    "pyarrow>=22.0.0",
+    "sqlalchemy>=2.0.44",
+    "tqdm>=4.67.1",
+]
+
 [dependency-groups]
 dev = [
-    "click>=8.4.2",
     "jupyter>=1.1.1",
-    "pandas>=3.0.3",
-    "pgcli>=4.5.0",
-    "psycopg2-binary>=2.9.12",
-    "pyarrow>=25.0.0",
-    "sqlalchemy>=2.0.51",
-    "tqdm>=4.68.4",
+    "pgcli>=4.3.0",
 ]
 
-[project]
-name = "docker-workshop"
-version = "0.1.0"
-description = "NY taxi ingestion pipeline"
-requires-python = ">=3.11"
-dependencies = [
-    "click>=8.4.2",
-    "pandas>=3.0.3",
-    "psycopg2-binary>=2.9.12",
-    "sqlalchemy>=2.0.51",
-    "tqdm>=4.68.4",
-]
-
-[project.optional-dependencies]
-dev = [
-    "jupyter>=1.1.1",
-    "pgcli>=4.5.0",
-    "pyarrow>=25.0.0",
-]
-
-[build-system]
-requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.build_meta"
+[tool.uv]
+exclude-newer = "7 days"

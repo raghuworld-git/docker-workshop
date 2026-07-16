@@ -1,16 +1,12 @@
-# Start with slim Python 3.13 image
-FROM python:3.13.10-slim
+FROM python:3.13.11-slim
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
 
-# Set working directory
-WORKDIR /app
+WORKDIR /code
+ENV PATH="/code/.venv/bin:$PATH"
 
-# Copy dependency metadata and install dependencies
-COPY pyproject.toml pyproject.toml
-RUN python -m pip install --upgrade pip setuptools wheel
-RUN python -m pip install --no-cache-dir .
+COPY pyproject.toml .python-version uv.lock ./
+RUN uv sync --locked
 
-# Copy application code
-COPY pipeline/ pipeline/
+COPY ingest_data.py .
 
-# Set entry point
-ENTRYPOINT ["python", "pipeline/ingest_data.py"]
+ENTRYPOINT ["python", "ingest_data.py"]
