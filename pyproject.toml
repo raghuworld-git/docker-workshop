@@ -1,0 +1,7 @@
+[dependency-groups]
+dev = [
+    "jupyter>=1.1.1",
+    "pandas>=3.0.3",
+    "pgcli>=4.5.0",
+    "pyarrow>=25.0.0",
+]
