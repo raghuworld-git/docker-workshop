@@ -14,6 +14,7 @@ resolution-markers = [
 
 [manifest.dependency-groups]
 dev = [
+    { name = "click", specifier = ">=8.4.2" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "pandas", specifier = ">=3.0.3" },
     { name = "pgcli", specifier = ">=4.5.0" },
