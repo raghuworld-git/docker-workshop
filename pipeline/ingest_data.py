@@ -72,6 +72,13 @@ def run(pg_user, pg_pass, pg_host, pg_port, pg_db, year, month, target_table, ch
             con=engine,
             if_exists='append'
         )
+    
+    # load zone data 
+    df  = pd.read_csv('https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv')
+    df.to_sql(name='zones',con=engine,if_exists='append')
+
+
+
 
 if __name__ == '__main__':
     run()
